@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.job import JobResponse, JobCreate, JobUpdate
 from app.db.deps import get_db
@@ -28,10 +28,14 @@ def create_job_applications(
 @router.get("/", response_model=list[JobResponse])
 def list_my_jobs(
     status: JobStatus | None = None,
+    limit: int = 10,
+    offset: int = 0,
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    return get_user_jobs(db, current_user, status)
+    return get_user_jobs(
+        db=db, user=current_user, status=status, limit=limit, offset=offset
+    )
 
 
 @router.put("/{job_id}", response_model=JobResponse)
@@ -42,10 +46,12 @@ def update_job_applications(
     current_user=Depends(get_current_user),
 ):
     job = get_job_by_id(db, job_id, current_user)
+    if not job_update.dict(exclude_unset=True):
+        raise HTTPException(status_code=400, detail="No fields provided for update")
     return update_job(db, job, job_update)
 
 
-@router.delete("/{job_id}", status_code=status.HTTP_404_NOT_FOUND)
+@router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_job_applications(
     job_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)
 ):

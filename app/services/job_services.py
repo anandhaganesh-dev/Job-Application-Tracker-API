@@ -20,11 +20,17 @@ def create_job(db: Session, job: JobCreate, user: User):
     return db_job
 
 
-def get_user_jobs(db: Session, user: User, status: JobStatus | None = None):
+def get_user_jobs(
+    db: Session,
+    user: User,
+    status: JobStatus | None = None,
+    limit: int = 10,
+    offset: int = 0,
+):
     query = db.query(JobApplication).filter(JobApplication.user_id == user.id)
     if status:
         query = query.filter(JobApplication.status == status)
-    return query.all()
+    return query.offset(offset).limit(limit).all()
 
 
 def get_job_by_id(db: Session, job_id: int, user: User):
