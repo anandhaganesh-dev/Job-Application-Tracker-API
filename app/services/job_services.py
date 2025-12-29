@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
 from datetime import date
 from app.models.job import JobApplication
-from app.schemas.job import JobCreate
+from app.schemas.job import JobCreate, JobUpdate, JobStatus
 from app.models.user import User
+from fastapi import HTTPException, status
 
 
 def create_job(db: Session, job: JobCreate, user: User):
@@ -19,5 +20,35 @@ def create_job(db: Session, job: JobCreate, user: User):
     return db_job
 
 
-def get_user_jobs(db: Session, user: User):
-    return db.query(JobApplication).filter(JobApplication.user_id == user.id).all()
+def get_user_jobs(db: Session, user: User, status: JobStatus | None = None):
+    query = db.query(JobApplication).filter(JobApplication.user_id == user.id)
+    if status:
+        query = query.filter(JobApplication.status == status)
+    return query.all()
+
+
+def get_job_by_id(db: Session, job_id: int, user: User):
+    job = (
+        db.query(JobApplication)
+        .filter(JobApplication.id == job_id, JobApplication.user_id == user.id)
+        .first()
+    )
+    if not job:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Job application not found"
+        )
+    return job
+
+
+def update_job(db: Session, job: JobApplication, job_update: JobUpdate):
+    for field, value in job_update.dict(exclude_unset=True).items():
+        setattr(job, field, value)
+
+    db.commit()
+    db.refresh(job)
+    return job
+
+
+def delete_job(db: Session, job: JobApplication):
+    db.delete(job)
+    db.commit()
