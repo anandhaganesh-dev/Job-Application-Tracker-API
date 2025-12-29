@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.db.base import Base
 from app.db.session import engine
 from app.models import user, job
-from app.routers import auth, users, jobs
+from app.api.v1.router import router as v1_router
 
 app = FastAPI(title="Job-Applications-Tracker-API")
 
@@ -17,9 +17,7 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(jobs.router)
+app.include_router(v1_router)
 
 
 @app.get("/")
