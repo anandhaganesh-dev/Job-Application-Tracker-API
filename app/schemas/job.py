@@ -18,7 +18,7 @@ class JobResponse(BaseModel):
     status: JobStatus
     applied_date: date
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -28,5 +28,5 @@ class JobUpdate(BaseModel):
     status: Optional[JobStatus] = None
     applied_date: Optional[date] = None
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

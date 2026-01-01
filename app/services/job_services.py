@@ -47,7 +47,7 @@ def get_job_by_id(db: Session, job_id: int, user: User):
 
 
 def update_job(db: Session, job: JobApplication, job_update: JobUpdate):
-    for field, value in job_update.dict(exclude_unset=True).items():
+    for field, value in job_update.model_dump(exclude_unset=True).items():
         setattr(job, field, value)
 
     db.commit()

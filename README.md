@@ -60,8 +60,4 @@ DELETE /api/v1/jobs/{id}
 
 Frontend integration (React)
 
-Email reminders
-
-AI resume analyzer integration
-
-Docker deployment
+ADD Role based access , refresh tokens

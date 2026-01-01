@@ -12,10 +12,13 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
 
+    class ConfigDict:
+        from_attributes = True
+
 
 class UserLogin(BaseModel):
     email: str
     password: str
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

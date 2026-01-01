@@ -38,6 +38,13 @@ def list_my_jobs(
     )
 
 
+@router.get("/{job_id}", response_model=JobResponse)
+def get_job(
+    job_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)
+):
+    return get_job_by_id(db, job_id, current_user)
+
+
 @router.put("/{job_id}", response_model=JobResponse)
 def update_job_applications(
     job_id: int,
@@ -46,7 +53,7 @@ def update_job_applications(
     current_user=Depends(get_current_user),
 ):
     job = get_job_by_id(db, job_id, current_user)
-    if not job_update.dict(exclude_unset=True):
+    if not job_update.model_dump(exclude_unset=True):
         raise HTTPException(status_code=400, detail="No fields provided for update")
     return update_job(db, job, job_update)
 
