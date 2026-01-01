@@ -10,6 +10,7 @@ A backend REST API built with FastAPI that helps users track and manage their jo
 - Filtering & pagination
 - PostgreSQL database
 - API versioning (/api/v1)
+- Testing using pytest
 
 ## 🛠 Tech Stack
 - FastAPI
@@ -17,13 +18,14 @@ A backend REST API built with FastAPI that helps users track and manage their jo
 - SQLAlchemy
 - JWT Authentication
 - Pydantic
+- Pytest
 
 ## 📦 Setup Instructions
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd job-tracker-api
+git clone https://github.com/anandhaganesh-dev/Job-Application-Tracker-API.git
+cd Job-Application-Tracker-API
 ### 2. Create virtual environment in IDE
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
@@ -31,10 +33,13 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 ### 3. Install dependencies
 pip install -r requirements.txt
 
+### Optional 
+pytest # test the routes 
+
 ### 4. Configure environment variables
 cp .env.example .env
 
-Update values inside .env.
+Update values inside .env
 
 ### 5. Run the server
 uvicorn app.main:app --reload
@@ -49,6 +54,8 @@ POST /api/v1/auth/register
 POST /api/v1/auth/login
 
 GET /api/v1/jobs
+
+GET /api/v1/jobs/{id}
 
 POST /api/v1/jobs
 
